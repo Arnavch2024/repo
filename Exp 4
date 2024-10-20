@@ -1,0 +1,65 @@
+#include <stdio.h>
+int MAX=20;
+int cqueue[20];
+int front=-1;
+int rear=-1;
+void enqueue(int cqueue[], int data)
+{
+    if(front == rear == -1)
+
+           {
+             front = rear = 0;
+             cqueue[rear] = data;
+            }
+            else if(((rear+1)%MAX) == front)
+            {
+                printf("\nqueue is full");
+            }
+            else
+             {
+                 rear = ((rear+1)%MAX); 
+                 cqueue[rear]=data;
+              }
+}
+
+int dequeue() {
+    if (front==rear==-1 ) {
+        printf("Queue is empty! Cannot dequeue data.\n");
+    }
+    else if (front == rear) {
+        printf("\ndequeue element%d",cqueue[front]);
+        front = -1;
+        rear  = -1;
+    } else {
+        printf("\ndequeue element%d",cqueue[front]);
+        front = (front + 1) % MAX;
+    }
+}
+
+void display() {
+    if (front==rear==-1) {
+        printf("Queue is empty!\n");
+    }
+    printf("\nQueue state:\n");
+    int i = front;
+    while (1) {
+        printf("%d ", cqueue[i]);
+        if (i == rear) {
+            break;
+        }
+        i = (i + 1) % MAX;
+    }
+    printf("\n");
+}
+void main()
+{
+    enqueue(cqueue, 10);
+    enqueue(cqueue, 20);
+    enqueue(cqueue, 30);
+    enqueue(cqueue, 40);
+    enqueue(cqueue, 50);
+    display();
+    dequeue();
+    dequeue();
+    display();
+}
