@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert a node at the beginning
+void insertAtBeginning(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    newNode->next = *head;
+    *head = newNode;
+}
+
+// Insert a node at the end
+void insertAtEnd(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+// Insert a node in the middle (after a specific position)
+void insertAtMiddle(struct Node** head, int data, int position) {
+    struct Node* newNode = createNode(data);
+    if (position == 0) {
+        insertAtBeginning(head, data);
+        return;
+    }
+    struct Node* temp = *head;
+    for (int i = 0; i < position - 1 && temp != NULL; i++) {
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Position out of bounds\n");
+        return;
+    }
+    newNode->next = temp->next;
+    temp->next = newNode;
+}
+
+// Delete a node from the beginning
+void deleteFromBeginning(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = *head;
+    *head = (*head)->next;
+    free(temp);
+}
+
+// Delete a node from the end
+void deleteFromEnd(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = *head;
+    if (temp->next == NULL) {
+        free(temp);
+        *head = NULL;
+        return;
+    }
+    while (temp->next->next != NULL) {
+        temp = temp->next;
+    }
+    free(temp->next);
+    temp->next = NULL;
+}
+
+// Delete a node from the middle (at a specific position)
+void deleteFromMiddle(struct Node** head, int position) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    struct Node* temp = *head;
+    if (position == 0) {
+        *head = temp->next;
+        free(temp);
+        return;
+    }
+    for (int i = 0; i < position - 1 && temp->next != NULL; i++) {
+        temp = temp->next;
+    }
+    if (temp->next == NULL || temp->next->next == NULL) {
+        printf("Position out of bounds\n");
+        return;
+    }
+    struct Node* toDelete = temp->next;
+    temp->next = toDelete->next;
+    free(toDelete);
+}
+
+// Function to print the linked list
+void printList(struct Node* head) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Main function to test the linked list implementation
+int main() {
+    struct Node* head = NULL;
+
+    // Insert at beginning
+    insertAtBeginning(&head, 1);
+    insertAtBeginning(&head, 2);
+
+    // Insert at end
+    insertAtEnd(&head, 3);
+    insertAtEnd(&head, 4);
+
+    // Insert at middle
+    insertAtMiddle(&head, 5, 2);  // After the second position
+
+    // Print list
+    printf("Linked List: ");
+    printList(head);
+
+    // Delete from beginning
+    deleteFromBeginning(&head);
+    printf("After deleting from beginning: ");
+    printList(head);
+
+    // Delete from end
+    deleteFromEnd(&head);
+    printf("After deleting from end: ");
+    printList(head);
+
+    // Delete from middle
+    deleteFromMiddle(&head, 1);  // Delete node at position 1
+    printf("After deleting from middle: ");
+    printList(head);
+
+    return 0;
+}
+
