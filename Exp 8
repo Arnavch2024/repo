@@ -1,0 +1,137 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a doubly linked list node
+struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+    return newNode;
+}
+
+// Insert a node at the end of the circular doubly linked list
+void insertAtEnd(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        newNode->next = *head;
+        newNode->prev = *head;
+    } else {
+        struct Node* last = (*head)->prev;
+        last->next = newNode;
+        newNode->prev = last;
+        newNode->next = *head;
+        (*head)->prev = newNode;
+    }
+}
+
+// Insert a node at the beginning of the circular doubly linked list
+void insertAtBeginning(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        newNode->next = *head;
+        newNode->prev = *head;
+    } else {
+        struct Node* last = (*head)->prev;
+        newNode->next = *head;
+        newNode->prev = last;
+        last->next = newNode;
+        (*head)->prev = newNode;
+        *head = newNode;
+    }
+}
+
+// Delete a node from the beginning of the circular doubly linked list
+void deleteFromBeginning(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = *head;
+    struct Node* last = (*head)->prev;
+
+    if (*head == (*head)->next) {
+        free(*head);
+        *head = NULL;
+    } else {
+        last->next = (*head)->next;
+        (*head)->next->prev = last;
+        *head = (*head)->next;
+        free(temp);
+    }
+}
+
+// Delete a node from the end of the circular doubly linked list
+void deleteFromEnd(struct Node** head) {
+    if (*head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* last = (*head)->prev;
+
+    if (*head == (*head)->next) {
+        free(*head);
+        *head = NULL;
+    } else {
+        struct Node* secondLast = last->prev;
+        secondLast->next = *head;
+        (*head)->prev = secondLast;
+        free(last);
+    }
+}
+
+// Function to print the circular doubly linked list
+void printList(struct Node* head) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node* temp = head;
+    do {
+        printf("%d <-> ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+    printf("(back to head)\n");
+}
+
+// Main function to test the circular doubly linked list implementation
+int main() {
+    struct Node* head = NULL;
+
+    // Insert elements into the circular doubly linked list
+    insertAtEnd(&head, 10);
+    insertAtEnd(&head, 20);
+    insertAtEnd(&head, 30);
+
+    printf("Circular Doubly Linked List: ");
+    printList(head);
+
+    // Insert at the beginning
+    insertAtBeginning(&head, 5);
+    printf("After inserting 5 at the beginning: ");
+    printList(head);
+
+    // Delete from the beginning
+    deleteFromBeginning(&head);
+    printf("After deleting from the beginning: ");
+    printList(head);
+
+    // Delete from the end
+    deleteFromEnd(&head);
+    printf("After deleting from the end: ");
+    printList(head);
+
+    return 0;
+}
