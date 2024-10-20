@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100
+
+// BFS function
+void bfs(int adjMatrix[MAX][MAX], int visited[MAX], int startVertex, int numVertices) {
+    int queue[MAX], front = 0, rear = 0;
+    visited[startVertex] = 1;
+    queue[rear++] = startVertex;
+
+    printf("BFS Traversal: ");
+
+    while (front < rear) {
+        int currentVertex = queue[front++];
+        printf("%d ", currentVertex);
+
+        // Explore the neighbors
+        for (int i = 0; i < numVertices; i++) {
+            if (adjMatrix[currentVertex][i] == 1 && !visited[i]) {
+                queue[rear++] = i;
+                visited[i] = 1;
+            }
+        }
+    }
+    printf("\n");
+}
+
+// DFS function
+void dfs(int adjMatrix[MAX][MAX], int visited[MAX], int startVertex, int numVertices) {
+    visited[startVertex] = 1;
+    printf("%d ", startVertex);
+
+    for (int i = 0; i < numVertices; i++) {
+        if (adjMatrix[startVertex][i] == 1 && !visited[i]) {
+            dfs(adjMatrix, visited, i, numVertices);
+        }
+    }
+}
+
+int main() {
+    int numVertices;
+    int adjMatrix[MAX][MAX];
+    int visited[MAX] = {0}; // To keep track of visited vertices
+
+    // Get the number of vertices and the adjacency matrix
+    printf("Enter the number of vertices: ");
+    scanf("%d", &numVertices);
+
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 0; i < numVertices; i++) {
+        for (int j = 0; j < numVertices; j++) {
+            scanf("%d", &adjMatrix[i][j]);
+        }
+    }
+
+    int startVertex;
+    
+    // BFS
+    printf("Enter the start vertex for BFS: ");
+    scanf("%d", &startVertex);
+    bfs(adjMatrix, visited, startVertex, numVertices);
+
+    // Reset visited array for DFS
+    for (int i = 0; i < numVertices; i++) {
+        visited[i] = 0;
+    }
+    // DFS
+    printf("DFS Traversal: ");
+    dfs(adjMatrix, visited, startVertex, numVertices);
+    printf("\n");
+return 0;
+}
